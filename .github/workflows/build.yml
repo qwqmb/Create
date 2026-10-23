@@ -29,6 +29,16 @@ jobs:
       - name: Build
         run: ./gradlew build
 
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-jars
+          path: |
+            **/build/libs/*.jar
+            !**/build/libs/*-sources.jar
+            !**/build/libs/*-dev.jar
+          if-no-files-found: warn
+
       - name: Run Gametests
         if: ${{ !inputs.is-release }}
         run: ./gradlew runGameTestServer
