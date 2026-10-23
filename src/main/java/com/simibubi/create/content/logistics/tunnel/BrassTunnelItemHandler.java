@@ -36,9 +36,9 @@ public class BrassTunnelItemHandler implements IItemHandler {
 		if (!blockEntity.canTakeItems())
 			return stack;
 		
-		ItemStack remainder = ItemHelper.limitCountToMaxStackSize(stack, simulate);
+		ItemStack remainder = ItemHelper.excessAboveMaxStackSize(stack);
 		if (!simulate) 
-			blockEntity.setStackToDistribute(stack, null);
+			blockEntity.setStackToDistribute(ItemHelper.clampToMaxStackSize(stack), null);
 		return remainder;
 	}
 

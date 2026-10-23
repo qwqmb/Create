@@ -35,15 +35,18 @@ public class ItemDrainItemHandler implements IItemHandler {
 			.isEmpty())
 			return stack;
 		
-		ItemStack returned = ItemStack.EMPTY;
+		ItemStack toInsert;
+		ItemStack returned;
 		if (stack.getCount() > 1 && GenericItemEmptying.canItemBeEmptied(blockEntity.getLevel(), stack)) {
+			toInsert = ItemHandlerHelper.copyStackWithSize(stack, 1);
 			returned = ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - 1);
-			stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
-		} else
-			returned = ItemHelper.limitCountToMaxStackSize(stack, simulate);
+		} else {
+			toInsert = ItemHelper.clampToMaxStackSize(stack);
+			returned = ItemHelper.excessAboveMaxStackSize(stack);
+		}
 		
 		if (!simulate) {
-			TransportedItemStack heldItem = new TransportedItemStack(stack);
+			TransportedItemStack heldItem = new TransportedItemStack(toInsert);
 			heldItem.prevBeltPosition = 0;
 			blockEntity.setHeldItem(heldItem, side.getOpposite());
 			blockEntity.notifyUpdate();

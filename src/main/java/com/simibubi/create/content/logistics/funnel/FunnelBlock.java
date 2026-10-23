@@ -140,10 +140,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 			return;
 
 		ItemStack remainder = tryInsert(worldIn, pos, stack, false);
-		if (remainder.isEmpty())
-			entityIn.discard();
-		if (remainder.getCount() < stack.getCount() && entityIn instanceof ItemEntity)
-			((ItemEntity) entityIn).setItem(remainder);
+		ItemHelper.consumeItemEntity(entityIn, remainder);
 	}
 
 	protected boolean canInsertIntoFunnel(BlockState state) {

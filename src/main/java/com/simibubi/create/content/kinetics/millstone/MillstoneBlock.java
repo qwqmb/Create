@@ -5,6 +5,7 @@ import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.item.ItemHelper;
 
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
@@ -109,12 +110,8 @@ public class MillstoneBlock extends KineticBlock implements IBE<MillstoneBlockEn
 			return;
 
 		ItemStack remainder = capability.orElse(new ItemStackHandler())
-			.insertItem(0, itemEntity.getItem(), false);
-		if (remainder.isEmpty())
-			itemEntity.discard();
-		if (remainder.getCount() < itemEntity.getItem()
-			.getCount())
-			itemEntity.setItem(remainder);
+			.insertItem(0, itemEntity.getItem().copy(), false);
+		ItemHelper.consumeItemEntity(itemEntity, remainder);
 	}
 
 	@Override

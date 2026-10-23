@@ -312,6 +312,12 @@ public class ItemHelper {
 		return entityIn instanceof ItemEntity itemEntity ? itemEntity.getItem() : ItemStack.EMPTY;
 	}
 
+	/**
+	 * @deprecated Modifies the given stack, which violates the {@link IItemHandler#insertItem}
+	 * contract. Use {@link #clampToMaxStackSize(ItemStack)} and
+	 * {@link #excessAboveMaxStackSize(ItemStack)} instead.
+	 */
+	@Deprecated
 	public static ItemStack limitCountToMaxStackSize(ItemStack stack, boolean simulate) {
 		int count = stack.getCount();
 		int max = stack.getMaxStackSize();
@@ -321,6 +327,45 @@ public class ItemHelper {
 		if (!simulate)
 			stack.setCount(max);
 		return remainder;
+	}
+
+	/**
+	 * Returns a copy of the given stack that fits within its maximum stack size. The
+	 * argument is never modified.
+	 */
+	public static ItemStack clampToMaxStackSize(ItemStack stack) {
+		int max = stack.getMaxStackSize();
+		return stack.getCount() > max ? ItemHandlerHelper.copyStackWithSize(stack, max) : stack.copy();
+	}
+
+	/**
+	 * Returns a copy of the portion of the given stack that exceeds its maximum stack
+	 * size, or an empty stack if all of it fits. The argument is never modified.
+	 */
+	public static ItemStack excessAboveMaxStackSize(ItemStack stack) {
+		int max = stack.getMaxStackSize();
+		return stack.getCount() > max ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - max)
+			: ItemStack.EMPTY;
+	}
+
+	/**
+	 * Common finishing step for blocks taking items from an {@link ItemEntity}. On a full
+	 * transfer the entity's stack is cleared before discarding it, so that no other pickup
+	 * logic can claim the same stack within the same tick. On a partial transfer, only the
+	 * remainder is left on the entity.
+	 */
+	public static void consumeItemEntity(Entity entity, ItemStack remainder) {
+		if (entity instanceof ItemEntity itemEntity) {
+			if (remainder.isEmpty()) {
+				itemEntity.setItem(ItemStack.EMPTY);
+				itemEntity.discard();
+			} else if (remainder.getCount() != itemEntity.getItem().getCount()) {
+				itemEntity.setItem(remainder);
+			}
+			return;
+		}
+		if (remainder.isEmpty())
+			entity.discard();
 	}
 
 	public static void copyContents(IItemHandler from, IItemHandlerModifiable to) {

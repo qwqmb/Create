@@ -31,9 +31,9 @@ public class ItemHandlerBeltSegment implements IItemHandler {
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (this.beltInventory.canInsertAt(offset)) {
-			ItemStack remainder = ItemHelper.limitCountToMaxStackSize(stack, simulate);
+			ItemStack remainder = ItemHelper.excessAboveMaxStackSize(stack);
 			if (!simulate) {
-				TransportedItemStack newStack = new TransportedItemStack(stack);
+				TransportedItemStack newStack = new TransportedItemStack(ItemHelper.clampToMaxStackSize(stack));
 				newStack.insertedAt = offset;
 				newStack.beltPosition = offset + .5f + (beltInventory.beltMovementPositive ? -1 : 1) / 16f;
 				newStack.prevBeltPosition = newStack.beltPosition;

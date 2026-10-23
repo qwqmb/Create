@@ -23,7 +23,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -107,15 +106,12 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
 		if (!PackageEntity.centerPackage(entityIn, Vec3.atBottomCenterOf(pos.above())))
 			return;
 		ItemStack remainder = input.handleInsertion(stack, Direction.UP, false);
-		if (remainder.isEmpty()) {
-			entityIn.discard();
-			if (entityIn instanceof PackageEntity box) {
-				Player player = box.tossedBy.get();
-				if (player != null)
-					AllAdvancements.PACKAGE_CHUTE_THROW.awardTo(player);
-			}
-		} else if (remainder.getCount() < stack.getCount() && entityIn instanceof ItemEntity)
-			((ItemEntity) entityIn).setItem(remainder);
+		if (remainder.isEmpty() && entityIn instanceof PackageEntity box) {
+			Player player = box.tossedBy.get();
+			if (player != null)
+				AllAdvancements.PACKAGE_CHUTE_THROW.awardTo(player);
+		}
+		ItemHelper.consumeItemEntity(entityIn, remainder);
 	}
 
 	@Override

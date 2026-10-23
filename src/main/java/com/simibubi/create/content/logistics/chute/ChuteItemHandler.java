@@ -27,9 +27,9 @@ public class ChuteItemHandler implements IItemHandler {
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (!blockEntity.canAcceptItem(stack))
 			return stack;
-		ItemStack remainder = ItemHelper.limitCountToMaxStackSize(stack, simulate);
+		ItemStack remainder = ItemHelper.excessAboveMaxStackSize(stack);
 		if (!simulate) 
-			blockEntity.setItem(stack);
+			blockEntity.setItem(ItemHelper.clampToMaxStackSize(stack));
 		return remainder;
 	}
 

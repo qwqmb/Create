@@ -139,13 +139,9 @@ public class BasinBlock extends Block implements IBE<BasinBlockEntity>, IWrencha
 		if (!entityIn.isAlive())
 			return;
 		withBlockEntityDo(worldIn, entityIn.blockPosition(), be -> {
-			ItemStack insertItem = ItemHandlerHelper.insertItem(be.inputInventory, itemEntity.getItem()
+			ItemStack remainder = ItemHandlerHelper.insertItem(be.inputInventory, itemEntity.getItem()
 				.copy(), false);
-			if (insertItem.isEmpty()) {
-				itemEntity.discard();
-				return;
-			}
-			itemEntity.setItem(insertItem);
+			ItemHelper.consumeItemEntity(itemEntity, remainder);
 		});
 	}
 

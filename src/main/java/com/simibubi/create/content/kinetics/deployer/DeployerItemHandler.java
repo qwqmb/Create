@@ -53,9 +53,9 @@ public class DeployerItemHandler implements IItemHandlerModifiable {
 
 		ItemStack held = getHeld();
 		if (held.isEmpty()) {
-			ItemStack remainder = ItemHelper.limitCountToMaxStackSize(stack, simulate);
+			ItemStack remainder = ItemHelper.excessAboveMaxStackSize(stack);
 			if (!simulate)
-				set(stack);
+				set(ItemHelper.clampToMaxStackSize(stack));
 			return remainder;
 		}
 

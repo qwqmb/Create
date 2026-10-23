@@ -51,7 +51,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -222,10 +221,7 @@ public class BeltBlock extends HorizontalKineticBlock
 				if (handler == null)
 					return;
 				ItemStack remainder = handler.insertItem(0, asItem, false);
-				if (remainder.isEmpty())
-					entityIn.discard();
-				else if (entityIn instanceof ItemEntity itemEntity && remainder.getCount() != itemEntity.getItem().getCount())
-					itemEntity.setItem(remainder);
+				ItemHelper.consumeItemEntity(entityIn, remainder);
 			});
 			return;
 		}

@@ -406,10 +406,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity {
 		inventory.clear();
 		ItemStack remainder = inventory.insertItem(0, entity.getItem()
 			.copy(), false);
-		if (remainder.isEmpty())
-			entity.discard();
-		else
-			entity.setItem(remainder);
+		ItemHelper.consumeItemEntity(entity, remainder);
 	}
 
 	public void start(ItemStack inserted) {
